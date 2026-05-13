@@ -14,7 +14,8 @@ on:
           - completo
           - web-tv
           - apps
-          - dns
+          - web-tv
+          - apps
 
 jobs:
   setup-server:
@@ -56,15 +57,6 @@ jobs:
           nohup node server.js &
         fi
 
-    - name: Configurar DNS (Cloudflare)
-      if: ${{ secrets.CF_API_TOKEN != '' }}
-      env:
-        CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        DOMAIN: ${{ secrets.DOMAIN }}
-      run: |
-        chmod +x dns/cloudflare-sync.sh
-        ./dns/cloudflare-sync.sh
-
     - name: Iniciar API Groq
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -79,7 +71,7 @@ jobs:
         echo "Web TV: http://localhost:8080"
         echo "Sites: http://localhost:80"
         echo "API Groq: http://localhost:5000"
-        echo "DNS Configurado: $(date)"
+        echo "GitHub IP: $(curl -s ifconfig.me)"
         df -h
         free -m
 

@@ -1,39 +1,19 @@
-name: Gerenciador de DNS
+name: IP do Servidor
 
 on:
-  push:
-    paths:
-      - 'dns/**'
   workflow_dispatch:
-    inputs:
-      domain:
-        description: 'Domínio para configurar'
-        required: false
 
 jobs:
-  update-dns:
+  check-ip:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Ler Configuração DNS
-      id: dns_config
+    - name: Obter IP do Servidor
       run: |
-        echo "config<<EOF" >> $GITHUB_OUTPUT
-        cat dns/config.json >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-
-    - name: Sincronizar DNS Cloudflare
-      if: ${{ secrets.CF_API_TOKEN != '' }}
-      env:
-        CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-      run: |
+        echo "=== IP do Servidor GitHub ==="
+        echo "IP Público: $(curl -s ifconfig.me)"
+        echo "Hostname: $(hostname)"
         chmod +x dns/cloudflare-sync.sh
         ./dns/cloudflare-sync.sh
-
-    - name: Atualizar Registros
-      run: |
-        echo "DNS atualizado com sucesso!"
-        echo "Domínios configurados:"
-        python3 -c "import json; config=json.load(open('dns/config.json')); [print(f'  - {d[\"domain\"]} -> {d[\"target\"]}') for d in config.get('domains', [])]"

@@ -1,56 +1,13 @@
 {
-  "provider": "cloudflare",
-  "domains": [
-    {
-      "domain": "seudominio.com",
-      "type": "A",
-      "target": "SEU_IP_AQUI",
-      "proxied": true,
-      "ttl": 3600
-    },
-    {
-      "domain": "www.seudominio.com",
-      "type": "CNAME",
-      "target": "seudominio.com",
-      "proxied": true,
-      "ttl": 3600
-    },
-    {
-      "domain": "tv.seudominio.com",
-      "type": "A",
-      "target": "SEU_IP_AQUI",
-      "proxied": true,
-      "ttl": 3600,
-      "service": "web-tv"
-    },
-    {
-      "domain": "api.seudominio.com",
-      "type": "A",
-      "target": "SEU_IP_AQUI",
-      "proxied": true,
-      "ttl": 3600,
-      "service": "api-groq"
-    },
-    {
-      "domain": "app.seudominio.com",
-      "type": "A",
-      "target": "SEU_IP_AQUI",
-      "proxied": true,
-      "ttl": 3600,
-      "service": "apps"
-    }
-  ],
-  "mx_records": [
-    {
-      "domain": "seudominio.com",
-      "priority": 10,
-      "target": "mail.seudominio.com"
-    }
-  ],
-  "txt_records": [
-    {
-      "domain": "seudominio.com",
-      "value": "v=spf1 include:_spf.google.com ~all"
-    }
-  ]
+  "server": {
+    "ip_github": "github.com",
+    "runner_ip": "dinamico (GitHub Actions)",
+    "ports": [80, 8080, 5000, 3000]
+  },
+  "servicos": {
+    "web_tv": "http://localhost:8080",
+    "sites_apps": "http://localhost:80",
+    "api_groq": "http://localhost:5000",
+    "backend": "http://localhost:3000"
+  }
 }
