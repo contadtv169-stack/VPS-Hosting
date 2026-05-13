@@ -1,0 +1,12 @@
+{
+  "id": 3,
+  "name": "Canal Esportes",
+  "type": "live",
+  "stream_url": "https://example.com/stream/sports.m3u8",
+  "logo": "https://example.com/sports-logo.png",
+  "category": "esportes",
+  "description": "Esportes ao vivo e eventos especiais",
+  "status": "online",
+  "quality": ["720p", "1080p", "4K"],
+  "language": "pt-BR"
+}

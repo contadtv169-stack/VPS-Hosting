@@ -1,0 +1,43 @@
+name: Web TV Streaming
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Canal para transmitir'
+        required: false
+        default: 'todos'
+
+jobs:
+  stream-channels:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Instalar FFmpeg
+      run: sudo apt-get install -y ffmpeg
+
+    - name: Iniciar Streams
+      run: |
+        chmod +x web-tv/stream/stream-manager.sh
+        ./web-tv/stream/stream-manager.sh
+
+    - name: Gerar Playlist M3U
+      run: |
+        echo "#EXTM3U" > web-tv/channels/playlist.m3u
+        for channel in web-tv/channels/*.json; do
+          name=$(basename "$channel" .json)
+          url=$(cat "$channel" | python3 -c "import sys,json; print(json.load(sys.stdin)['stream_url'])")
+          echo "#EXTINF:-1,$name" >> web-tv/channels/playlist.m3u
+          echo "$url" >> web-tv/channels/playlist.m3u
+        done
+
+    - name: Deploy Playlist
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./web-tv/channels
+        destination_dir: web-tv

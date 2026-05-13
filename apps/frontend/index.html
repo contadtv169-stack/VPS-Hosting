@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPS Hosting - Web TV, Sites & Apps</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a3e 50%, #0a1a2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 0; margin-bottom: 3rem;
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; background: linear-gradient(45deg, #00d4ff, #7b2ff7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: #8899aa; text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: #00d4ff; }
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00d4ff, #7b2ff7, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 1.2rem; color: #8899aa; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn {
+            display: inline-block; padding: 1rem 2rem; border-radius: 0.5rem;
+            text-decoration: none; font-weight: bold; transition: transform 0.3s;
+        }
+        .btn-primary { background: #7b2ff7; color: #fff; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(123, 47, 247, 0.4); }
+        .btn-secondary { background: transparent; color: #00d4ff; border: 1px solid #00d4ff; margin-left: 1rem; }
+        .btn-secondary:hover { transform: translateY(-2px); }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 4rem 0;
+        }
+        .card {
+            background: rgba(26, 26, 62, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s, border-color 0.3s;
+            text-align: center;
+        }
+        .card:hover { transform: translateY(-5px); border-color: #7b2ff7; }
+        .card-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .card h3 { margin-bottom: 0.5rem; color: #00d4ff; }
+        .card p { color: #8899aa; font-size: 0.9rem; }
+        .stats {
+            display: flex; justify-content: center; gap: 4rem;
+            margin: 4rem 0; text-align: center;
+        }
+        .stat-value { font-size: 2.5rem; font-weight: bold; color: #00d4ff; }
+        .stat-label { color: #8899aa; font-size: 0.9rem; }
+        .channels-preview {
+            margin: 4rem 0;
+        }
+        .channels-preview h2 { text-align: center; margin-bottom: 2rem; }
+        footer {
+            text-align: center; padding: 2rem 0; color: #556677;
+            border-top: 1px solid rgba(255,255,255,0.1); margin-top: 4rem;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-links { display: none; }
+            .stats { flex-direction: column; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">🚀 VPS Hosting</div>
+            <div class="nav-links">
+                <a href="#web-tv">Web TV</a>
+                <a href="#sites">Sites</a>
+                <a href="#apps">Apps</a>
+                <a href="#dominios">Domínios</a>
+                <a href="/channels" target="_blank">Canais</a>
+                <a href="/ia" target="_blank">IA</a>
+            </div>
+        </nav>
+
+        <div class="hero">
+            <h1>Sua VPS Completa na Nuvem</h1>
+            <p>Web TV, Sites, Aplicativos e Domínios - Tudo hospedado com GitHub Actions e potencializado por IA com Groq</p>
+            <a href="#planos" class="btn btn-primary">Começar Agora</a>
+            <a href="/ia" class="btn btn-secondary">🤖 Falar com IA</a>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">📺</div>
+                <h3>Web TV</h3>
+                <p>Hospede canais de TV ao vivo com streaming HLS de alta qualidade</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌐</div>
+                <h3>Sites</h3>
+                <p>Sites estáticos e dinâmicos com deploy automático via GitHub</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📱</div>
+                <h3>Apps</h3>
+                <p>APIs e aplicações completas com backend escalável</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔗</div>
+                <h3>Domínios</h3>
+                <p>DNS gerenciado com Cloudflare e certificados SSL gratuitos</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🤖</div>
+                <h3>IA Integrada</h3>
+                <p>Assistente inteligente com API Groq para suporte e automação</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🖥️</div>
+                <h3>PC Remoto</h3>
+                <p>Acesso SSH/RDP/VNC ao seu servidor VPS completo</p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div>
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Disponibilidade</div>
+            </div>
+            <div>
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Canais de TV</div>
+            </div>
+            <div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label">GitHub Actions</div>
+            </div>
+            <div>
+                <div class="stat-value">🔒</div>
+                <div class="stat-label">SSL Grátis</div>
+            </div>
+        </div>
+
+        <div class="channels-preview" id="web-tv">
+            <h2>📺 Canais em Destaque</h2>
+            <div class="grid" id="channel-list">
+                <div class="card"><div class="card-icon">📡</div><h3>Canal Principal</h3><p>Ao vivo 24h</p></div>
+                <div class="card"><div class="card-icon">📰</div><h3>Canal Notícias</h3><p>Informação contínua</p></div>
+                <div class="card"><div class="card-icon">⚽</div><h3>Canal Esportes</h3><p>Esportes ao vivo</p></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 VPS Hosting - Desenvolvido com GitHub Actions & Groq API</p>
+        </footer>
+    </div>
+
+    <script>
+        fetch('https://api.github.com/repos/' + window.location.hostname + '/VPS-Hosting/contents/web-tv/channels')
+            .then(r => r.json())
+            .then(data => {
+                const channels = data.filter(f => f.name.endsWith('.json'));
+                if (channels.length > 0) {
+                    const list = document.getElementById('channel-list');
+                    list.innerHTML = '';
+                    channels.forEach(ch => {
+                        fetch(ch.download_url)
+                            .then(r => r.json())
+                            .then(c => {
+                                list.innerHTML += `
+                                    <div class="card">
+                                        <div class="card-icon">📺</div>
+                                        <h3>${c.name}</h3>
+                                        <p>${c.description || 'Canal disponível'}</p>
+                                    </div>`;
+                            });
+                    });
+                }
+            })
+            .catch(() => {});
+    </script>
+</body>
+</html>

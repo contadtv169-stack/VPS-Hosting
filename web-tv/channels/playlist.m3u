@@ -1,0 +1,7 @@
+#EXTM3U
+#EXTINF:-1, Canal Principal
+https://example.com/stream/main.m3u8
+#EXTINF:-1, Canal Notícias
+https://example.com/stream/news.m3u8
+#EXTINF:-1, Canal Esportes
+https://example.com/stream/sports.m3u8

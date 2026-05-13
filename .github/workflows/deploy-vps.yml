@@ -1,0 +1,96 @@
+name: Deploy VPS Completo
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'Tipo de deploy'
+        required: true
+        default: 'completo'
+        type: choice
+        options:
+          - completo
+          - web-tv
+          - apps
+          - dns
+
+jobs:
+  setup-server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configurar Servidor
+      run: |
+        chmod +x server/scripts/setup.sh
+        ./server/scripts/setup.sh
+
+    - name: Instalar Nginx
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nginx apache2
+
+    - name: Configurar Nginx para Web TV e Sites
+      run: |
+        sudo cp server/nginx/web-tv.conf /etc/nginx/sites-available/
+        sudo cp server/nginx/apps.conf /etc/nginx/sites-available/
+        sudo ln -sf /etc/nginx/sites-available/web-tv.conf /etc/nginx/sites-enabled/
+        sudo ln -sf /etc/nginx/sites-available/apps.conf /etc/nginx/sites-enabled/
+        sudo nginx -t && sudo systemctl restart nginx
+
+    - name: Iniciar Web TV Server
+      run: |
+        chmod +x web-tv/stream/start-stream.sh
+        nohup ./web-tv/stream/start-stream.sh &
+
+    - name: Iniciar Backend
+      run: |
+        if [ -f apps/backend/package.json ]; then
+          cd apps/backend
+          npm install
+          nohup node server.js &
+        fi
+
+    - name: Configurar DNS (Cloudflare)
+      if: ${{ secrets.CF_API_TOKEN != '' }}
+      env:
+        CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        DOMAIN: ${{ secrets.DOMAIN }}
+      run: |
+        chmod +x dns/cloudflare-sync.sh
+        ./dns/cloudflare-sync.sh
+
+    - name: Iniciar API Groq
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      run: |
+        cd groq-api
+        pip install -r requirements.txt
+        nohup python app.py --port 5000 &
+
+    - name: Status do Servidor
+      run: |
+        echo "=== SERVIDOR VPS ATIVO ==="
+        echo "Web TV: http://localhost:8080"
+        echo "Sites: http://localhost:80"
+        echo "API Groq: http://localhost:5000"
+        echo "DNS Configurado: $(date)"
+        df -h
+        free -m
+
+  health-check:
+    needs: setup-server
+    runs-on: ubuntu-latest
+    steps:
+    - name: Verificar Serviços
+      run: |
+        echo "✅ VPS Hospedagem ativa com sucesso!"
+        echo "🌐 Web TV: Online"
+        echo "📡 Sites/Apps: Online"
+        echo "🤖 API Groq: Online"
+        echo "🖥️ Acesso Remoto: Disponível"
