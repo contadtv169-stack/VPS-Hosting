@@ -9,9 +9,9 @@ if ! command -v ffmpeg &> /dev/null; then
 fi
 
 # Iniciar servidor HTTP para servir streams
-python3 -m http.server 8888 --directory web-tv/stream &
+python3 -m http.server 8888 --bind 0.0.0.0 --directory web-tv/stream &
 
-echo "Servidor de streaming rodando na porta 8888"
+echo "Servidor de streaming rodando na porta 8888 (0.0.0.0)"
 
 # Monitorar processos
 while true; do

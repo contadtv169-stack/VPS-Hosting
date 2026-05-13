@@ -1,13 +1,13 @@
 {
   "server": {
     "ip_github": "github.com",
-    "runner_ip": "dinamico (GitHub Actions)",
-    "ports": [80, 8080, 5000, 3000]
+    "runner_ip": "IP dinamico do GitHub Actions",
+    "ports": [80, 8080, 3000, 5000]
   },
   "servicos": {
-    "web_tv": "http://localhost:8080",
-    "sites_apps": "http://localhost:80",
-    "api_groq": "http://localhost:5000",
-    "backend": "http://localhost:3000"
+    "web_tv": "http://IP_DO_RUNNER:8080",
+    "sites_apps": "http://IP_DO_RUNNER:80",
+    "painel": "http://IP_DO_RUNNER:3000/painel/",
+    "api_groq": "http://IP_DO_RUNNER:3000/api/generate"
   }
 }

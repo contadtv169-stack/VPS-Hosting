@@ -14,8 +14,6 @@ on:
           - completo
           - web-tv
           - apps
-          - web-tv
-          - apps
 
 jobs:
   setup-server:
@@ -50,6 +48,8 @@ jobs:
         nohup ./web-tv/stream/start-stream.sh &
 
     - name: Iniciar Backend
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       run: |
         if [ -f apps/backend/package.json ]; then
           cd apps/backend
@@ -67,11 +67,13 @@ jobs:
 
     - name: Status do Servidor
       run: |
+        IP=$(curl -s ifconfig.me)
         echo "=== SERVIDOR VPS ATIVO ==="
-        echo "Web TV: http://localhost:8080"
-        echo "Sites: http://localhost:80"
-        echo "API Groq: http://localhost:5000"
-        echo "GitHub IP: $(curl -s ifconfig.me)"
+        echo "IP Público: $IP"
+        echo "Web TV: http://$IP:8080"
+        echo "Sites/Apps: http://$IP:80"
+        echo "API Groq: http://$IP:5000"
+        echo "Painel: http://$IP:3000/painel/"
         df -h
         free -m
 
@@ -81,8 +83,9 @@ jobs:
     steps:
     - name: Verificar Serviços
       run: |
+        IP=$(curl -s ifconfig.me)
         echo "✅ VPS Hospedagem ativa com sucesso!"
-        echo "🌐 Web TV: Online"
-        echo "📡 Sites/Apps: Online"
-        echo "🤖 API Groq: Online"
-        echo "🖥️ Acesso Remoto: Disponível"
+        echo "🌐 Web TV: http://$IP:8080"
+        echo "📡 Sites/Apps: http://$IP"
+        echo "🤖 API Groq: http://$IP:3000/api/generate"
+        echo "🔐 Painel: http://$IP:3000/painel/"
