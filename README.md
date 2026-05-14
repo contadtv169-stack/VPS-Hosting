@@ -22,24 +22,35 @@ VPS-Hosting/
 └── README.md
 ```
 
+## 24/7 Online
+
+O workflow roda **24 horas por dia** usando:
+- **Schedule automático** a cada 4 horas (cron: `0 */4 * * *`)
+- **Keepalive** com monitoramento e auto-restart dos serviços
+- **Timeout de 6 horas** por execução (máximo do GitHub Actions)
+- **Concurrency** para manter sempre uma instância ativa
+
 ## Como Usar
 
 ### 1. Web TV
 Coloque seus streams e canais na pasta `web-tv/channels/`.
 
 ### 2. Sites e Apps
-Sites estáticos em `apps/frontend/`. APIs em `apps/api/`. Deploy automático via GitHub Actions.
+Sites estáticos em `apps/frontend/`. APIs em `apps/backend/`.
 
 ### 3. API Groq (único requisito)
 Configure apenas o secret `GROQ_API_KEY` no GitHub para ativar o assistente IA.
+
+### 4. Painel de Controle
+Acesse `/painel/` após o deploy. Login: `admin` / `1101112`
 
 ## Deploy Rápido
 
 1. Faça fork deste repositório
 2. Configure o Secret no GitHub:
    - `GROQ_API_KEY`: Sua chave da API Groq
-3. Execute o workflow "Deploy VPS Completo"
-4. Pronto!
+3. Execute o workflow "Deploy VPS 24/7"
+4. Pronto! A VPS ficará online 24/7
 
 ## Licença
 

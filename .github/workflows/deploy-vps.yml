@@ -1,8 +1,10 @@
-name: Deploy VPS Completo
+name: Deploy VPS 24/7
 
 on:
   push:
     branches: [ main, master ]
+  schedule:
+    - cron: '0 */4 * * *'
   workflow_dispatch:
     inputs:
       deploy_type:
@@ -15,10 +17,14 @@ on:
           - web-tv
           - apps
 
+concurrency:
+  group: vps-24-7
+  cancel-in-progress: true
+
 jobs:
-  setup-server:
+  start-server:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 360
 
     steps:
     - name: Checkout
@@ -34,8 +40,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y nginx apache2
 
-    - name: Configurar Nginx para Web TV e Sites
+    - name: Configurar Nginx
       run: |
+        sudo mkdir -p /var/www/web-tv /var/www/apps
         sudo cp server/nginx/web-tv.conf /etc/nginx/sites-available/
         sudo cp server/nginx/apps.conf /etc/nginx/sites-available/
         sudo ln -sf /etc/nginx/sites-available/web-tv.conf /etc/nginx/sites-enabled/
@@ -51,11 +58,10 @@ jobs:
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       run: |
-        if [ -f apps/backend/package.json ]; then
-          cd apps/backend
-          npm install
-          nohup node server.js &
-        fi
+        cd apps/backend
+        npm install
+        nohup node server.js > /tmp/backend.log 2>&1 &
+        sleep 2
 
     - name: Iniciar API Groq
       env:
@@ -63,29 +69,51 @@ jobs:
       run: |
         cd groq-api
         pip install -r requirements.txt
-        nohup python app.py --port 5000 &
+        nohup python app.py --port 5000 > /tmp/groq.log 2>&1 &
 
-    - name: Status do Servidor
+    - name: Status Inicial
       run: |
         IP=$(curl -s ifconfig.me)
-        echo "=== SERVIDOR VPS ATIVO ==="
+        echo "=== SERVIDOR VPS INICIADO ==="
         echo "IP Público: $IP"
         echo "Web TV: http://$IP:8080"
-        echo "Sites/Apps: http://$IP:80"
-        echo "API Groq: http://$IP:5000"
+        echo "Sites/Apps: http://$IP"
+        echo "API Groq: http://$IP:3000/api/generate"
         echo "Painel: http://$IP:3000/painel/"
-        df -h
-        free -m
+        echo "Início: $(date)"
 
-  health-check:
-    needs: setup-server
-    runs-on: ubuntu-latest
-    steps:
-    - name: Verificar Serviços
+    - name: Keep Alive - 24/7 Monitoramento
       run: |
+        chmod +x server/scripts/keepalive.sh
+        nohup ./server/scripts/keepalive.sh > /tmp/keepalive.log 2>&1 &
+
         IP=$(curl -s ifconfig.me)
-        echo "✅ VPS Hospedagem ativa com sucesso!"
-        echo "🌐 Web TV: http://$IP:8080"
-        echo "📡 Sites/Apps: http://$IP"
-        echo "🤖 API Groq: http://$IP:3000/api/generate"
-        echo "🔐 Painel: http://$IP:3000/painel/"
+        START_TIME=$(date +%s)
+
+        while true; do
+          UPTIME=$(( $(date +%s) - START_TIME ))
+          UPTIME_H=$(( UPTIME / 3600 ))
+          UPTIME_M=$(( (UPTIME % 3600) / 60 ))
+          UPTIME_S=$(( UPTIME % 60 ))
+
+          echo "=== [$(date)] VPS ATIVA - Uptime: ${UPTIME_H}h ${UPTIME_M}m ${UPTIME_S}s ==="
+          echo "IP: $IP"
+          echo "Web TV: http://$IP:8080"
+          echo "Painel: http://$IP:3000/painel/"
+
+          # Auto-restart dos serviços se pararem
+          if ! curl -s http://127.0.0.1:3000/api/health > /dev/null 2>&1; then
+            echo "⚠️ Backend caiu! Reiniciando..."
+            cd apps/backend && nohup node server.js > /tmp/backend.log 2>&1 &
+          fi
+          if ! curl -s http://127.0.0.1:5000/ > /dev/null 2>&1; then
+            echo "⚠️ Groq API caiu! Reiniciando..."
+            cd groq-api && nohup python app.py --port 5000 > /tmp/groq.log 2>&1 &
+          fi
+          if ! pgrep -x nginx > /dev/null; then
+            echo "⚠️ Nginx caiu! Reiniciando..."
+            sudo systemctl restart nginx 2>/dev/null || sudo nginx
+          fi
+
+          sleep 60
+        done
