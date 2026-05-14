@@ -1,57 +1,65 @@
-# VPS Hosting - Web TV, Sites & Apps (com IA Groq)
+# VPS Hosting - sonicvid.online
 
-Sistema de hospedagem VPS usando GitHub Actions, com Web TV, sites, apps e IA via Groq.
+Sistema completo de hospedagem VPS com site, Web TV, apps, IA Groq, Instagram e Pix.
+
+## Arquitetura
+
+```
+🌐 GitHub Pages (sonicvid.online)  →  Site público (frontend)
+💻 PC Local (com ngrok)             →  Backend, IA, Web TV, Instagram, Pix
+🔗 Hostinger DNS                    →  Domínio apontado para GitHub Pages
+```
+
+## Site (GitHub Pages)
+
+O site estático fica em `apps/frontend/` e é publicado automaticamente no GitHub Pages:
+- **URL:** https://sonicvid.online
+- **Deploy automático** via GitHub Actions ao fazer push na branch main
+
+## PC Local (Serviços)
+
+Para rodar os serviços no seu PC:
+
+```bash
+cd pc
+npm install
+node start-pc.js
+```
+
+Isso inicia:
+- **Painel:** http://localhost:3000/painel/
+- **API Groq:** Interface com IA via Groq
+- **Web TV:** Streaming de canais
+- **Instagram:** Publicar posts
+- **Pix:** Gateway de pagamentos (BETA)
+- **ngrok:** Túneis públicos para acessar de qualquer lugar
+
+## Login
+
+**Usuário:** admin
+**Senha:** 1101112
+
+## DNS (Hostinger)
+
+Configure no painel da Hostinger:
+
+| Tipo | Nome | Valor |
+|------|------|-------|
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | contadtv169-stack.github.io |
+
+## Secrets do GitHub (para Actions)
+
+- `GROQ_API_KEY`: Chave da API Groq
 
 ## Funcionalidades
 
-- **Web TV**: Hospedagem de canais de TV ao vivo e streaming
-- **Sites & Apps**: Hospedagem de sites estáticos/dinâmicos e aplicações
-- **IA Integrada**: API Groq para assistente inteligente
-- **GitHub Actions**: CI/CD e deploy automático
-
-## Estrutura do Projeto
-
-```
-VPS-Hosting/
-├── .github/workflows/   # GitHub Actions - deploy e serviços
-├── server/              # Configurações do servidor (Nginx, scripts)
-├── web-tv/              # Sistema de Web TV e canais
-├── apps/                # Aplicações (Frontend, Backend)
-├── dns/                 # Configurações de IP do servidor
-├── groq-api/            # Integração com API Groq (IA)
-└── README.md
-```
-
-## 24/7 Online
-
-O workflow roda **24 horas por dia** usando:
-- **Schedule automático** a cada 4 horas (cron: `0 */4 * * *`)
-- **Keepalive** com monitoramento e auto-restart dos serviços
-- **Timeout de 6 horas** por execução (máximo do GitHub Actions)
-- **Concurrency** para manter sempre uma instância ativa
-
-## Como Usar
-
-### 1. Web TV
-Coloque seus streams e canais na pasta `web-tv/channels/`.
-
-### 2. Sites e Apps
-Sites estáticos em `apps/frontend/`. APIs em `apps/backend/`.
-
-### 3. API Groq (único requisito)
-Configure apenas o secret `GROQ_API_KEY` no GitHub para ativar o assistente IA.
-
-### 4. Painel de Controle
-Acesse `/painel/` após o deploy. Login: `admin` / `1101112`
-
-## Deploy Rápido
-
-1. Faça fork deste repositório
-2. Configure o Secret no GitHub:
-   - `GROQ_API_KEY`: Sua chave da API Groq
-3. Execute o workflow "Deploy VPS 24/7"
-4. Pronto! A VPS ficará online 24/7
-
-## Licença
-
-MIT
+- 📺 Web TV com canais de streaming
+- 🌐 Site institucional
+- 🤖 Assistente IA com Groq
+- 📸 Postagem no Instagram
+- 💰 Pix Payment Gateway (BETA)
+- 🔐 Painel de controle completo

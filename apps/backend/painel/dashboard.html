@@ -130,6 +130,8 @@ tr:hover { background:rgba(255,255,255,0.03); }
     <div class="stat-card"><div class="label">IP do Servidor</div><div class="value" id="statIp">-</div></div>
     <div class="stat-card"><div class="label">Web TV</div><div class="value" id="statWebTv">⏳</div></div>
     <div class="stat-card"><div class="label">API Groq</div><div class="value" id="statGroq">⏳</div></div>
+    <div class="stat-card"><div class="label">Instagram</div><div class="value" id="statIg">📸</div></div>
+    <div class="stat-card"><div class="label">Pix (BETA)</div><div class="value" id="statPix">💰</div></div>
     <div class="stat-card"><div class="label">Uptime</div><div class="value" id="statUptime">-</div></div>
   </div>
 
@@ -147,6 +149,34 @@ tr:hover { background:rgba(255,255,255,0.03); }
     </div>
     <div style="padding:1.5rem; font-size:0.85rem; color:#8899aa;">
       <div id="serverInfo">Carregando...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h3>📸 Instagram</h3>
+    </div>
+    <div style="padding:1.5rem;">
+      <div style="margin-bottom:1rem;">
+        <input type="text" id="igCaption" placeholder="Legenda para o post..." style="width:100%;padding:0.6rem 1rem;border-radius:0.4rem;border:1px solid #2a2a5e;background:#0a0a1a;color:#fff;margin-bottom:0.5rem;outline:none;">
+        <input type="file" id="igImage" accept="image/*" style="color:#8899aa;font-size:0.85rem;margin-bottom:0.5rem;">
+        <button class="btn-add" onclick="postInstagram()">📸 Publicar no Instagram</button>
+        <div id="igResult" style="margin-top:0.5rem;font-size:0.85rem;color:#4caf50;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h3>💰 Pix Pagamentos (BETA)</h3>
+    </div>
+    <div style="padding:1.5rem;">
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <input type="number" id="pixValor" placeholder="Valor R$" step="0.01" style="flex:1;min-width:120px;padding:0.6rem 1rem;border-radius:0.4rem;border:1px solid #2a2a5e;background:#0a0a1a;color:#fff;outline:none;">
+        <input type="text" id="pixDesc" placeholder="Descrição" style="flex:2;min-width:200px;padding:0.6rem 1rem;border-radius:0.4rem;border:1px solid #2a2a5e;background:#0a0a1a;color:#fff;outline:none;">
+        <button class="btn-add" onclick="gerarPix()">💰 Gerar Pix</button>
+      </div>
+      <div id="pixResult"></div>
     </div>
   </div>
 
@@ -328,6 +358,74 @@ function sendIa() {
     const msgs = chat.querySelectorAll('.ia-msg.bot');
     const last = msgs[msgs.length - 1];
     last.textContent = '❌ Erro de conexão com o servidor';
+  });
+}
+
+function postInstagram() {
+  const caption = document.getElementById('igCaption').value;
+  const fileInput = document.getElementById('igImage');
+  const resultDiv = document.getElementById('igResult');
+
+  if (!fileInput.files || !fileInput.files[0]) {
+    resultDiv.style.color = '#f44336';
+    resultDiv.textContent = '❌ Selecione uma imagem';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    fetch('/api/instagram/post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': token },
+      body: JSON.stringify({ image: e.target.result, caption: caption || 'Post via VPS Hosting' })
+    })
+    .then(r => r.json())
+    .then(d => {
+      resultDiv.style.color = d.success ? '#4caf50' : '#f44336';
+      resultDiv.textContent = d.success ? '✅ ' + d.message : '❌ ' + (d.error || 'Erro');
+    })
+    .catch(() => {
+      resultDiv.style.color = '#f44336';
+      resultDiv.textContent = '❌ Erro ao publicar';
+    });
+  };
+  reader.readAsDataURL(fileInput.files[0]);
+}
+
+function gerarPix() {
+  const valor = document.getElementById('pixValor').value;
+  const desc = document.getElementById('pixDesc').value;
+  const resultDiv = document.getElementById('pixResult');
+
+  if (!valor || valor <= 0) { alert('Digite um valor válido'); return; }
+
+  fetch('/api/pix/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': token },
+    body: JSON.stringify({ valor: parseFloat(valor), descricao: desc || 'Pagamento VPS' })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.pix_copia_cola) {
+      resultDiv.innerHTML = `
+        <div style="background:#0a0a1a;border-radius:0.5rem;padding:1rem;border:1px solid #2a2a5e;">
+          <p style="color:#4caf50;font-weight:bold;margin-bottom:0.5rem;">✅ Pix gerado (BETA)</p>
+          <p style="color:#8899aa;font-size:0.8rem;">Valor: <b style="color:#fff;">R$ ${parseFloat(d.valor).toFixed(2)}</b></p>
+          <p style="color:#8899aa;font-size:0.8rem;">Código: <b style="color:#fff;">${d.codigo}</b></p>
+          <p style="color:#8899aa;font-size:0.8rem;">Status: <b style="color:#ff9800;">${d.status}</b></p>
+          <div style="margin-top:0.5rem;">
+            <label style="color:#8899aa;font-size:0.8rem;">Pix Copia e Cola:</label>
+            <textarea style="width:100%;padding:0.5rem;border-radius:0.3rem;border:1px solid #2a2a5e;background:#0a0a1a;color:#fff;font-size:0.75rem;margin-top:0.3rem;resize:none;" rows="2" readonly onclick="this.select()">${d.pix_copia_cola}</textarea>
+          </div>
+          <p style="color:#ff9800;font-size:0.75rem;margin-top:0.5rem;">⚠️ BETA - Pagamento manual</p>
+        </div>
+      `;
+    } else {
+      resultDiv.innerHTML = `<p style="color:#f44336;">❌ ${d.error || 'Erro ao gerar Pix'}</p>`;
+    }
+  })
+  .catch(() => {
+    resultDiv.innerHTML = '<p style="color:#f44336;">❌ Erro ao gerar Pix</p>';
   });
 }
 

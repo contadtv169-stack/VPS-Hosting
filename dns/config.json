@@ -1,13 +1,22 @@
 {
-  "server": {
-    "ip_github": "github.com",
-    "runner_ip": "IP dinamico do GitHub Actions",
-    "ports": [80, 8080, 3000, 5000]
+  "dominio": "sonicvid.online",
+  "dns_provider": "Hostinger",
+  "github_pages": {
+    "ips": ["185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153"],
+    "cname_target": "contadtv169-stack.github.io"
   },
+  "registros_dns": [
+    { "tipo": "A", "nome": "@", "valor": "185.199.108.153", "ttl": 3600 },
+    { "tipo": "A", "nome": "@", "valor": "185.199.109.153", "ttl": 3600 },
+    { "tipo": "A", "nome": "@", "valor": "185.199.110.153", "ttl": 3600 },
+    { "tipo": "A", "nome": "@", "valor": "185.199.111.153", "ttl": 3600 },
+    { "tipo": "CNAME", "nome": "www", "valor": "contadtv169-stack.github.io", "ttl": 3600 }
+  ],
   "servicos": {
-    "web_tv": "http://IP_DO_RUNNER:8080",
-    "sites_apps": "http://IP_DO_RUNNER:80",
-    "painel": "http://IP_DO_RUNNER:3000/painel/",
-    "api_groq": "http://IP_DO_RUNNER:3000/api/generate"
+    "site": "https://sonicvid.online",
+    "painel": "https://sonicvid.online/painel/",
+    "web_tv": "http://PC_LOCAL:8080",
+    "api_groq": "http://PC_LOCAL:5000",
+    "backend": "http://PC_LOCAL:3000"
   }
 }

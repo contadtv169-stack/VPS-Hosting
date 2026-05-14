@@ -1,0 +1,25 @@
+============================================
+  CONFIGURAR DNS - HOSTINGER
+  Domínio: sonicvid.online
+  GitHub Pages
+============================================
+
+Passo 1: Acesse o painel da Hostinger
+Passo 2: Vá em "DNS Zone Editor" ou "Gerenciar DNS"
+Passo 3: Adicione estes registros:
+
+------------------------------------------------
+TIPO  | NOME  | VALOR                     | TTL
+------------------------------------------------
+A     | @     | 185.199.108.153           | 3600
+A     | @     | 185.199.109.153           | 3600
+A     | @     | 185.199.110.153           | 3600
+A     | @     | 185.199.111.153           | 3600
+CNAME | www   | contadtv169-stack.github.io | 3600
+------------------------------------------------
+
+Passo 4: Remova registros A antigos se houver
+Passo 5: Salve (pode levar até 24h para propagar)
+
+Pronto! Após propagar, o site estará em:
+  https://sonicvid.online

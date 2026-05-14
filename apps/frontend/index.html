@@ -96,17 +96,14 @@
                 <a href="#web-tv">Web TV</a>
                 <a href="#sites">Sites</a>
                 <a href="#apps">Apps</a>
-                <a href="/channels" target="_blank">Canais</a>
-                <a href="/ia" target="_blank">IA</a>
                 <a href="/painel/" target="_blank" style="color:#7b2ff7;font-weight:bold;">Painel</a>
             </div>
         </nav>
 
         <div class="hero">
             <h1>Sua VPS Completa na Nuvem</h1>
-            <p>Web TV, Sites e Apps - Tudo hospedado com GitHub Actions e potencializado por IA com Groq</p>
+            <p>Web TV, Sites, Apps, Instagram e Pix - Tudo integrado com IA Groq no sonicvid.online</p>
             <a href="/painel/" class="btn btn-primary">🔐 Painel de Controle</a>
-            <a href="/ia" class="btn btn-secondary">🤖 Falar com IA</a>
         </div>
 
         <div class="grid">
@@ -131,9 +128,19 @@
                 <p>Assistente inteligente com API Groq para suporte e automação</p>
             </div>
             <div class="card">
-                <div class="card-icon">📡</div>
-                <h3>IP GitHub</h3>
-                <p>Hospedado diretamente nos runners do GitHub Actions</p>
+                <div class="card-icon">📸</div>
+                <h3>Instagram</h3>
+                <p>Publique posts diretamente do painel de controle</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">💰</div>
+                <h3>Pix BETA</h3>
+                <p>Gateway de pagamentos via Pix (em desenvolvimento)</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌐</div>
+                <h3>sonicvid.online</h3>
+                <p>Domínio registrado na Hostinger com GitHub Pages</p>
             </div>
         </div>
 
@@ -147,12 +154,12 @@
                 <div class="stat-label">Canais de TV</div>
             </div>
             <div>
-                <div class="stat-value">100%</div>
-                <div class="stat-label">GitHub Actions</div>
+                <div class="stat-value">📸</div>
+                <div class="stat-label">Instagram</div>
             </div>
             <div>
-                <div class="stat-value">🚀</div>
-                <div class="stat-label">Groq IA</div>
+                <div class="stat-value">💰</div>
+                <div class="stat-label">Pix BETA</div>
             </div>
         </div>
 
@@ -166,29 +173,24 @@
         </div>
 
         <footer>
-            <p>© 2026 VPS Hosting - <a href="/painel/" style="color:#7b2ff7;text-decoration:none;">Painel de Controle</a> | GitHub Actions + Groq API</p>
+            <p>© 2026 sonicvid.online - <a href="/painel/" style="color:#7b2ff7;text-decoration:none;">Painel de Controle</a> | Login: admin</p>
         </footer>
     </div>
 
     <script>
-        fetch('https://api.github.com/repos/' + window.location.hostname + '/VPS-Hosting/contents/web-tv/channels')
+        fetch('/api/channels')
             .then(r => r.json())
-            .then(data => {
-                const channels = data.filter(f => f.name.endsWith('.json'));
-                if (channels.length > 0) {
+            .then(channels => {
+                if (channels && channels.length > 0) {
                     const list = document.getElementById('channel-list');
                     list.innerHTML = '';
-                    channels.forEach(ch => {
-                        fetch(ch.download_url)
-                            .then(r => r.json())
-                            .then(c => {
-                                list.innerHTML += `
-                                    <div class="card">
-                                        <div class="card-icon">📺</div>
-                                        <h3>${c.name}</h3>
-                                        <p>${c.description || 'Canal disponível'}</p>
-                                    </div>`;
-                            });
+                    channels.forEach(c => {
+                        list.innerHTML += `
+                            <div class="card">
+                                <div class="card-icon">📺</div>
+                                <h3>${c.name}</h3>
+                                <p>${c.description || 'Canal disponível'}</p>
+                            </div>`;
                     });
                 }
             })
